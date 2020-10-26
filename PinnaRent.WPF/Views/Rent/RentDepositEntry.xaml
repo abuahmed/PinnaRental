@@ -1,0 +1,386 @@
+﻿<Window x:Class="PinnaRent.WPF.Views.RentDepositEntry"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        mc:Ignorable="d"
+        Title="የተቀማጭ ክፍያ" Height="580" Width="700" Name="WdwRentDepositEntry"
+        WindowStartupLocation="CenterScreen" Margin="0,0,0,0" ResizeMode="CanResize"
+        DataContext="{Binding RentDepositEntry, Source={StaticResource Locator}}"
+        Background="Transparent" WindowStyle="ThreeDBorderWindow" Closing="RentDepositEntry_OnClosing"
+        Icon="/PinnaRent.WPF;component/Resources/office-building.ico" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/MainSkin.xaml" />
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/ControlsDictionary.xaml" />
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/ListViewDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </Window.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Border Style="{StaticResource mainBorder}" CornerRadius="0" 
+                TextBlock.FontFamily="Bookman old style" TextBlock.Foreground="White">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="{Binding WindowHeight}"/>
+                    <RowDefinition Height="{Binding WindowWidth}"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Expander Grid.Row="0" Margin="5,0" IsExpanded="True" Visibility="{Binding ListVisibility}" 
+                               Header="ዝርዝር ማጥሪያ">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                        <!--<TextBlock  Text="አይነት"
+                                Style="{StaticResource textBlockStyle1}"/>-->
+                        <ComboBox x:Name="CmbTypeOfCpos"  Grid.Column="0" Grid.ColumnSpan="2"
+                                  Style="{StaticResource comboBoxStyle1}" 
+                                  ItemsSource="{Binding CpoTypes}"
+                                  DisplayMemberPath="Display" SelectedIndex="1"
+                                  SelectedItem="{Binding SelectedCpoType}"/>
+                        <TextBlock Text="ከ:" Grid.Row="0" Grid.Column="2"  
+                               Style="{StaticResource textBlockStyle1}"/>
+                        <Grid Grid.Column="3" Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Margin="5" IsEnabled="False" Text="{Binding StartDateText}"
+                                     VerticalContentAlignment="Center"
+                                     x:Name="TxtStartDateDate" FontWeight="Bold" Visibility="Visible" />
+                                <Button Grid.Column="1" x:Name="BtnStartDate" Margin="5" Background="Transparent" BorderThickness="0"
+                                    Command="{Binding MemberStartDateViewCommand}" HorizontalAlignment="Right"
+                                    ToolTip="View/Change Start Date" Tag="StartDate">
+                                    <Image Source="/PinnaRent.WPF;component/Resources\Images\calendar.png" Stretch="Uniform" Height="20" />
+                                </Button>
+                            </Grid>
+                            <DatePicker  Grid.Row="0" Grid.Column="3"
+                                            x:Name="DtFromDate" Visibility="Hidden"
+                                            SelectedDate="{Binding FilterStartDate}" 
+                                            Margin="5"  
+                                            VerticalAlignment="Center"/>
+
+                        <TextBlock Text="እስከ:" Grid.Column="4" Grid.Row="0" 
+                               Style="{StaticResource textBlockStyle1}"/>
+                            <Grid Grid.Column="5" Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Margin="5" IsEnabled="False" Text="{Binding EndDateText}"
+                                     VerticalContentAlignment="Center"
+                                     x:Name="TxtEndDateDate" FontWeight="Bold" Visibility="Visible" />
+                                <Button Grid.Column="1" x:Name="BtnEndDate" Margin="5" Background="Transparent" BorderThickness="0"
+                                    Command="{Binding MemberEndDateViewCommand}" HorizontalAlignment="Right"
+                                    ToolTip="View/Change End Date" Tag="EndDate">
+                                    <Image Source="/PinnaRent.WPF;component/Resources/Images/calendar.png" Stretch="Uniform" Height="20" />
+                                </Button>
+                            </Grid>
+                            <DatePicker Grid.Row="0" Grid.Column="5" 
+                                            x:Name="DtToDate" Visibility="Hidden"
+                                            SelectedDate="{Binding FilterEndDate}" 
+                                            Margin="0,5"   
+                                            VerticalAlignment="Center"/>
+                            
+                        
+                        <telerik:RadButton Grid.Row="0" Grid.Column="6" Content="አሳይ" 
+                            Command="{Binding RefreshWindowCommand}" Margin="3,0" Width="60"/>
+                            <telerik:RadButton Grid.Row="0" Grid.Column="7" Content="አትም" 
+                            Command="{Binding PrintWindowCommand}" Margin="3,0" Width="60"/>
+                       
+                    </Grid>
+                    </Expander>
+
+                    <ListView Grid.Row="1" x:Name="ListView" Margin="5,0" Visibility="{Binding ListVisibility}" 
+                                  ItemContainerStyle="{StaticResource GridViewItem}"
+                                  SelectedItem="{Binding SelectedRentDeposit}"
+                                  ItemsSource="{Binding RentDeposits}">
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="true"
+                                          ColumnHeaderContainerStyle="{StaticResource GridViewHeader}">
+                                <GridViewColumn Header="ተ.ቁ." Width="auto"
+                                                            DisplayMemberBinding="{Binding SerialNumber}"
+                                                            />
+                                <GridViewColumn Header="ክፍል"
+                                                    DisplayMemberBinding="{Binding Contrat.Room.Number}"
+                                                    Width="auto" />
+                            <GridViewColumn Header="ተከራይ"
+                                                    DisplayMemberBinding="{Binding Contrat.Rentee.DisplayName}"
+                                                    Width="100" />
+                            <GridViewColumn Header="ተቀማጭ" DisplayMemberBinding="{Binding TotalDepositAmountString}"
+                                                    Width="auto" />
+                                <GridViewColumn Header="የተቀመጠበት ቀን" DisplayMemberBinding="{Binding DepositedDateStringAmharic}"
+                                                    Width="auto" />
+                                <GridViewColumn Header="የተመለሰበት ቀን" DisplayMemberBinding="{Binding ReturnedDateStringAmharic}"
+                                                    Width="auto" />
+
+                            </GridView>
+                    </ListView.View>
+                </ListView>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5" Visibility="{Binding ListVisibility}" HorizontalAlignment="Right">
+                            <TextBlock  Text="አጠቃላይ: " Margin="0,0,0,0"/>
+                            <TextBlock  Text="{Binding TotalAmountDeposited}" FontWeight="Bold" FontSize="14"/>
+                        </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="1" Visibility="{Binding DetailVisibility}">
+                    <Grid Margin="0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Expander Grid.Row="0" Grid.Column="0" Margin="5,0" Header="የውል መረጃ" 
+                                  IsExpanded="True" Foreground="White">
+
+                            <Grid Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="30"/>
+                                </Grid.RowDefinitions>
+
+                                <!--<TextBlock Grid.Row="0" Grid.Column="0" Text="ፍሎር:"  VerticalAlignment="Center"/>
+                                <TextBox x:Name="TxtFloor" Grid.Row="0" Grid.Column="1" IsEnabled="False"
+                                             ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtFloor}"
+                                             Text="{Binding SelectedRoom.Floor.DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}" 
+                                             Validation.Error="Validation_Error" Margin="0,5,0,5" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" 
+									    Text="የአከፋፈል ሁኔታ:"/>
+                                <ComboBox   Grid.Column="1" Grid.Row="0" x:Name="CmbMaritalStatus"  
+                                                Margin="0,2" IsEnabled="False"
+									            SelectedValue="{Binding SelectedRoom.Type, Mode=TwoWay}" 
+                                                VerticalContentAlignment="Center"
+                                                Background="Transparent"
+									            ItemsSource="{Binding Mode=OneWay, Source={extensions:Enumeration {x:Type model:RoomTypes}}}" 
+									            Validation.ErrorTemplate="{x:Null}"  
+									            DisplayMemberPath="Description" 
+									            SelectedValuePath="Value"/>-->
+
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="ክፍል ቁ.:"  VerticalAlignment="Center"/>
+                                <TextBox x:Name="TxtFullName" Grid.Row="0" Grid.Column="3" IsEnabled="False"
+                                             ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtFullName}"
+                                             Text="{Binding SelectedRentalContrat.Room.Number, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}" 
+                                             Validation.Error="Validation_Error" Margin="0,5,0,5" />
+
+                                <TextBlock Grid.Row="0" Grid.Column="4" Text=" የኪራይ ዋጋ:" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TxtSex" Grid.Row="0" Grid.Column="5" IsEnabled="False"
+                                             ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtSex}"
+                                             Text="{Binding SelectedRentalContrat.Room.RentalFee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}" 
+                                             Validation.Error="Validation_Error" Margin="0,5,0,5" />
+
+                                <TextBlock Grid.Row="0" Grid.Column="6" Text=" የአገልግሎት ዋጋ:" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TxtService" Grid.Row="0" Grid.Column="7" IsEnabled="False"
+                                             ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtService}"
+                                             Text="{Binding SelectedRentalContrat.Room.ServiceFee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}" 
+                                             Validation.Error="Validation_Error" Margin="0,5,0,5" />
+
+                                <TextBlock Text="ስም:" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TxtFullName2" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" IsEnabled="False"
+                                             ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtFullName2}"
+                                             Text="{Binding SelectedRentalContrat.Rentee.DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}" 
+                                             Validation.Error="Validation_Error" Margin="0,5,0,5" />
+
+                                <TextBlock Text=" ቲን ቁ.:" Grid.Column="6" Grid.Row="1" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TxtTin" Grid.Row="1" Grid.Column="7" IsEnabled="False"
+                                             ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtTin}"
+                                             Text="{Binding SelectedRentalContrat.Rentee.TinNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}" 
+                                             Validation.Error="Validation_Error" Margin="0,5,0,5" />
+                            </Grid>
+                        </Expander>
+                        <Expander Grid.Row="1" Grid.Column="0" Margin="5,0" Header="የተቀማጭ ክፍያ ዝርዝር" Foreground="White"
+                                  IsExpanded="True">
+                            
+                                <Grid Margin="5">
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="30"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="የተከፈለበት ቀን: " Grid.Column="0" VerticalAlignment="Center" Visibility="Visible"/>
+                                    <Grid Grid.Row="0" Grid.Column="1" Visibility="Visible" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+
+                                        <DatePicker   Grid.Column="0" Grid.Row="0"  x:Name="DtPaymentDate" IsEnabled="False"                                        
+									                            ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=DtSubscriptionDate}" 
+									                            SelectedDate="{Binding SelectedRentDeposit.DepositedDate, Mode=TwoWay, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
+									                            Validation.Error="Validation_Error" Visibility="Hidden"
+									                            VerticalAlignment="Center" Margin="0,2"/>
+                                    <TextBox Text="{Binding SelectedRentDeposit.DepositedDateStringAmharic}" Visibility="Visible"
+                                               Grid.Column="0" Margin="0,5" IsEnabled="False" HorizontalAlignment="Stretch" FontWeight="Bold"/>
+
+                                    <Button Grid.Column="1" Background="Transparent" BorderThickness="0" x:Name="BtnPayment" Margin="5,0" Visibility="{Binding UserRoles.PaymentDeletion}"
+                                                Command="{Binding MemberSubscribedDateViewCommand}" HorizontalAlignment="Right"
+                                                ToolTip="View/Change Registered Date" Tag="SubscriptionDate">
+                                            <Image Source="/PinnaRent.WPF;component/Resources/Images/calendar.png"  Stretch="Uniform" Height="20"/>
+                                        </Button>
+                                    </Grid>
+
+                                    <TextBlock Text="የወራት:" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center"/>
+                                    <TextBox x:Name="TxtPaymentPeriod" Grid.Row="0" Grid.Column="3" IsEnabled="True"
+                                             ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtPaymentPeriod}"
+                                             Text="{Binding PaymentPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}" 
+                                             Validation.Error="Validation_Error" Margin="0,5,0,5" />
+
+                                   
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="አጠቃላይ ዋጋ:" VerticalAlignment="Center"/>
+                                    <TextBox x:Name="TxtAmount" Grid.Row="1" Grid.Column="1" IsEnabled="False"
+                                             ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtAmount}"
+                                             Text="{Binding AmountToPay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}" 
+                                             Validation.Error="Validation_Error" Margin="0,5,0,5" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="2" Text=" የከፈለው ብር:" VerticalAlignment="Center"/>
+                                    <TextBox x:Name="TxtAmountPaid" Grid.Row="1" Grid.Column="3" IsEnabled="{Binding SubscriptionDateEnability}"
+                                             ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtReceiptNumber}"
+                                             Text="{Binding SelectedRentDeposit.TotalDepositAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}" 
+                                             Validation.Error="Validation_Error" Margin="0,5,0,5" />
+
+                                   
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="ምርመራ:" VerticalAlignment="Center"/>
+                                    <TextBox x:Name="TxtComments" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" IsEnabled="True"
+                                             ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtComments}"
+                                             Text="{Binding SelectedRentDeposit.Remark, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}" 
+                                             Validation.Error="Validation_Error" Margin="0,5,0,5" />
+                                 
+                               
+                                </Grid>
+
+                        </Expander>
+                        <!--<GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" />-->
+                        <Expander Grid.Row="2" Grid.Column="0" Margin="5,0" Header="የተቀማጭ መልስ" Foreground="White"
+                                  IsExpanded="True" Visibility="{Binding DetailVisibility}">
+
+                            <Grid Margin="5">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+<!--GroupName="DepositReturnUsage"-->
+                                <CheckBox Grid.Column="1" Grid.Row="0" IsChecked="{Binding DepositReturnChecked}"
+                                             VerticalAlignment="Center" Tag="Return" Name="RadReturn" Background="Transparent"
+                                             Content="ተመልሷል"  />
+                                <TextBlock Text="የተመለሰበት ቀን: " Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Visibility="Visible"/>
+                                <Grid Grid.Row="0" Grid.Column="3" Visibility="Visible" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <DatePicker   Grid.Column="0" Grid.Row="0"  x:Name="DtReturnDate" IsEnabled="False"                                        
+									                            ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=DtReturnDate}" 
+									                            SelectedDate="{Binding SelectedRentDeposit.ReturnedDate, Mode=TwoWay, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
+									                            Validation.Error="Validation_Error" Visibility="Hidden"
+									                            VerticalAlignment="Center" Margin="0,2"/>
+                                    <TextBox Text="{Binding SelectedRentDeposit.ReturnedDateStringAmharic}" Visibility="Visible"
+                                               Grid.Column="0" Margin="0,5" IsEnabled="False" HorizontalAlignment="Stretch" FontWeight="Bold"/>
+
+                                    <Button Grid.Column="1" Background="Transparent" BorderThickness="0" x:Name="BtnReturn" Margin="5,0" 
+                                            Visibility="{Binding UserRoles.PaymentDeletion}"
+                                                Command="{Binding MemberSubscribedDateViewCommand}" HorizontalAlignment="Right"
+                                                ToolTip="View/Change Registered Date" Tag="SubscriptionDate">
+                                        <Image Source="/PinnaRent.WPF;component/Resources/Images/calendar.png"  Stretch="Uniform" Height="20"/>
+                                    </Button>
+                                </Grid>
+
+                                <!--<CheckBox Grid.Column="1" Grid.Row="1" IsChecked="{Binding DepositUsedChecked}"
+                                             VerticalAlignment="Center" Tag="Used" Name="RadUsed" Background="Transparent"
+                                             Content="ጥቅም ላይ ውሏል" />
+                                <TextBlock Text="ጥቅም ላይ የዋለበት ቀን: " Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Visibility="Visible"/>
+                                <Grid Grid.Row="1" Grid.Column="3" Visibility="Visible" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <DatePicker  Grid.Column="0" Grid.Row="0"  x:Name="DtUsedDate" IsEnabled="False"                                        
+									                            ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=DtUsedDate}" 
+									                            SelectedDate="{Binding SelectedRentDeposit.UsedDate, Mode=TwoWay, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
+									                            Validation.Error="Validation_Error" Visibility="Hidden"
+									                            VerticalAlignment="Center" Margin="0,2"/>
+                                    <TextBox Text="{Binding SelectedRentDeposit.UsedDateStringAmharic}" Visibility="Visible"
+                                               Grid.Column="0" Margin="0,5" IsEnabled="False" HorizontalAlignment="Stretch" FontWeight="Bold"/>
+
+                                    <telerik:RadButton Grid.Column="1" Background="Transparent" BorderThickness="0" x:Name="BtnUsed" Margin="5,0" 
+                                            Visibility="{Binding UserRoles.PaymentDeletion}"
+                                                Command="{Binding MemberSubscribedDateViewCommand}" HorizontalAlignment="Right"
+                                                ToolTip="View/Change Registered Date" Tag="SubscriptionDate">
+                                        <Image Source="/PinnaRent.WPF;component/Resources/Images/calendar.png"  Stretch="Uniform" Height="20"/>
+                                    </Button>
+                                </Grid>-->
+                            </Grid>
+                        </Expander>
+                        <StackPanel Orientation="Horizontal" Grid.Row="3" 
+                                    Background="Transparent" HorizontalAlignment="Right">
+
+                            <telerik:RadButton Tag="Save" x:Name="BtnSave" Height="35" VerticalAlignment="Top"
+                                    Command="{Binding SaveRentDepositViewCommand}" IsDefault="True"
+                                    CommandParameter="{Binding ElementName=WdwRentDepositEntry}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/PinnaRent.WPF;component/Resources/Images/disk_blue.png" Height="30" Width="30" Stretch="Uniform" />
+                                    <TextBlock VerticalAlignment="Center"> አስቀምጥ</TextBlock>
+                                </StackPanel>
+                            </telerik:RadButton>
+                       
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

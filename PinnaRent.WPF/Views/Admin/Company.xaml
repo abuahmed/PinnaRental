@@ -1,0 +1,342 @@
+﻿<Window x:Class="PinnaRent.WPF.Views.Company"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        xmlns:extensions="clr-namespace:PinnaRent.Core.Extensions;assembly=PinnaRent.Core"
+        xmlns:model="clr-namespace:PinnaRent.Core.Enumerations;assembly=PinnaRent.Core"
+        mc:Ignorable="d" ResizeMode="NoResize" x:Name="WdwCompany"
+        Title="ድርጅት መረጃ" Height="500" Width="570"
+        WindowStartupLocation="CenterScreen" Margin="0,20,0,0"
+        DataContext="{Binding Company, Source={StaticResource Locator}}"
+        Background="Transparent" Closing="Company_OnClosing"
+        Icon="/PinnaRent.WPF;component/Resources/office-building.ico" 
+        WindowStyle="ThreeDBorderWindow" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/MainSkin.xaml" />
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/ControlsDictionary.xaml" />
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/ListViewDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </Window.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Border Style="{StaticResource mainBorder}" CornerRadius="0" TextBlock.FontFamily="Bookman old style"
+                TextBlock.Foreground="White">
+            <Grid>
+                <Grid Margin="2,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="2" />
+                        <RowDefinition Height="40" />
+                    </Grid.RowDefinitions>
+
+                    <telerik:RadTabControl Grid.Row="0" Margin="3,0" HeaderBackground="Transparent"
+                                           Background="Transparent" telerik:StyleManager.Theme="Windows7">
+                        <telerik:RadTabItem Header=" የድርጅቱ መረጃ " IsSelected="True">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <!--<Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>-->
+
+                                <telerik:RadExpander Grid.Row="0" Grid.Column="0" Header="ዋና መረጃ" IsExpanded="True">
+                                    <Grid Margin="5,0">
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="30" />
+                                            <RowDefinition Height="30" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="30" />
+                                            <RowDefinition Height="30" />
+                                            <RowDefinition Height="30" />
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="አይነት:" VerticalAlignment="Center" />
+                                        <ComboBox Grid.Column="1" Grid.Row="0" x:Name="CmbRoomStatus"
+                                                  Margin="0,3"
+                                                  SelectedValue="{Binding SelectedCompanyType, Mode=TwoWay}"
+                                                  VerticalContentAlignment="Center"
+                                                  Background="Transparent"
+                                                  ItemsSource="{Binding Mode=OneWay, Source={extensions:Enumeration {x:Type model:CompanyTypes}}}"
+                                                  Validation.ErrorTemplate="{x:Null}"
+                                                  DisplayMemberPath="Description"
+                                                  SelectedValuePath="Value" />
+
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="ስም:" VerticalAlignment="Center" />
+                                        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="30" />
+                                                <RowDefinition Height="30" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" MaxWidth="50"/>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+
+                                            <ComboBox Grid.Column="0" ItemsSource="{Binding Titles, Mode=OneWay}"
+                                                      DisplayMemberPath="DisplayName" VerticalContentAlignment="Center"
+                                                      Background="Transparent" Visibility="{Binding OwnerTitleVisibility}"
+                                                      SelectedItem="{Binding SelectedTitle}" />
+
+                                            <telerik:RadButton Grid.Row="0" Grid.Column="1" Foreground="White"
+                                                    x:Name="BtnAddNewCategory"
+                                                    FontSize="14" Visibility="{Binding OwnerTitleVisibility}"
+                                                    Command="{Binding AddNewTitleCommand}" Width="auto"
+                                                    FontWeight="ExtraBold" Margin="0,3,3,3" ToolTip="Add New Title" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="/PinnaRent.WPF;component/Resources/Images/add.png" Height="20" Width="20" Stretch="Uniform" />
+                                                </StackPanel>
+                                            </telerik:RadButton>
+                                            <TextBox Grid.Row="0" Grid.Column="2" x:Name="TXtCustName"
+                                                     CharacterCasing="Upper"
+                                                     ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TXtCustName}"
+                                                     Text="{Binding SelectedCompany.DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                                                     Validation.Error="Validation_Error" Margin="0,3,3,3"
+                                                     VerticalContentAlignment="Center" />
+
+                                        </Grid>
+
+
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="ስራ አስኪያጅ:"
+                                                   VerticalAlignment="Center" Visibility="{Binding ManagerVisibility}"/>
+                                        <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Margin="0" Visibility="{Binding ManagerVisibility}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="30" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" MaxWidth="50"/>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+
+                                            <ComboBox Grid.Column="0" ItemsSource="{Binding Titles, Mode=OneWay}"
+                                                      DisplayMemberPath="DisplayName" VerticalContentAlignment="Center"
+                                                      Background="Transparent"
+                                                      SelectedItem="{Binding SelectedTitle}" />
+
+                                            <telerik:RadButton Grid.Row="0" Grid.Column="1" Foreground="White"
+                                                    x:Name="BtnAddNewCategory2"
+                                                    Width="auto"
+                                                    Command="{Binding AddNewTitleCommand}"
+                                                    FontWeight="ExtraBold" Margin="0,3" ToolTip="Add New Category" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="/PinnaRent.WPF;component/Resources/Images/add.png" Height="20" Width="20" Stretch="Uniform" />
+                                                </StackPanel>
+                                            </telerik:RadButton>
+                                            <TextBox x:Name="TXtManager" Grid.Row="0" Grid.Column="2"
+                                                     ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TXtManager}"
+                                                     Text="{Binding SelectedCompany.ManagerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                                                     Validation.Error="Validation_Error" Margin="3"
+                                                     VerticalContentAlignment="Center" />
+
+                                        </Grid>
+
+
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="ታክስ መ.ቁ.(TIN):"
+                                                   VerticalAlignment="Center" />
+                                        <TextBox x:Name="TxtTinNumber" Grid.Row="3" Grid.Column="1"
+                                                 ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtTinNumber}"
+                                                 Text="{Binding SelectedCompany.TinNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                                                 Validation.Error="Validation_Error" Margin="0,3" />
+                                        <TextBlock Grid.Row="3" Grid.Column="2" Text=" ቫት ቁጥር:"
+                                                   VerticalAlignment="Center" />
+                                        <TextBox x:Name="TxtVatNumber" Grid.Row="3" Grid.Column="3"
+                                                 ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtVatNumber}"
+                                                 Text="{Binding SelectedCompany.VatNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                                                 Validation.Error="Validation_Error" Margin="3" />
+
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="ጠቅላላ ስፋት(ካ/ሜ):"
+                                                   VerticalAlignment="Center" />
+                                        <TextBox x:Name="TxtTotalSqrFeet" Grid.Row="4" Grid.Column="1"
+                                                 ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtTotalSqrFeet}"
+                                                 Text="{Binding SelectedCompany.TotalSqrFeet, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                                                 Validation.Error="Validation_Error" Margin="0,3" />
+
+                                        <TextBlock Grid.Row="4" Grid.Column="2" Text=" ካርታ ቁጥር:"
+                                                   VerticalAlignment="Center" />
+                                        <TextBox x:Name="TxtPlotNumber" Grid.Row="4" Grid.Column="3"
+                                                 ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtPlotNumber}"
+                                                 Text="{Binding SelectedCompany.PlotNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                                                 Validation.Error="Validation_Error" Margin="3" />
+
+                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="ካርታ የተሰጠበት ቀን:"
+                                                   VerticalAlignment="Center" />
+                                        <TextBox x:Name="TxtTradeName" Grid.Row="5" Grid.Column="1"
+                                                 ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtTradeName}"
+                                                 Text="{Binding SelectedCompany.TradeName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                                                 Validation.Error="Validation_Error" Margin="0,3" />
+                                        <CheckBox Grid.Row="5" Grid.Column="3" Content="በውክልና የሚንቀሳቀስ"
+                                                  FontWeight="Bold"
+                                                  Foreground="White" IsChecked="{Binding RepresenteeEnability}" />
+
+                                    </Grid>
+                                </telerik:RadExpander>
+
+                                <telerik:RadExpander Grid.Row="1" Grid.Column="0" Header="የድርጅት አድራሻ" IsExpanded="True"
+                                                    >
+                                    <Grid Margin="5,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="30" />
+                                            <RowDefinition Height="30" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition  />
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBox IsEnabled="False" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Margin="5,0" FontWeight="Bold"
+                                                 TextWrapping="Wrap" Text="{Binding SelectedCompany.CompanyAddress.AddressDescription}" VerticalContentAlignment="Top" />
+                                        <telerik:RadButton Grid.Row="0" Grid.Column="1" Tag="OwnerManagerAddress" x:Name="BtnCompanyAddress"
+                                           Command="{Binding SelectedCompanyAddressViewCommand}" ToolTip="የድርጅት አድራሻ አስገባ/አስተካክል"
+                                           CommandParameter="{Binding ElementName=BtnCompanyAddress}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="/PinnaRent.WPF;component/Resources/Images/address_book3.png" Height="25" Width="25" Stretch="Uniform" />
+                                                <TextBlock Text=" አድራሻ " VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </telerik:RadButton>
+
+                                    </Grid>
+                                </telerik:RadExpander>
+
+                                <telerik:RadExpander Grid.Row="2" Grid.Column="0" Header="የባለቤት/ስራ አስኪያጅ አድራሻ" IsExpanded="True"
+                                                     >
+                                    <Grid Margin="5,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="30" />
+                                            <RowDefinition Height="30" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition  Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" IsEnabled="False" Margin="5,0" FontWeight="Bold"
+                                                 TextWrapping="Wrap" Text="{Binding SelectedCompany.Address.AddressDescription}" VerticalContentAlignment="Top" />
+                                        <telerik:RadButton Grid.Row="0" Grid.Column="1" Tag="OwnerManagerAddress" x:Name="BtnOwnerManagerAddress"
+                                           Command="{Binding SelectedCompanyOwnerManagerAddressViewCommand}" ToolTip="የስራ አስኪያጅ አድራሻ አስገባ/አስተካክል"
+                                           CommandParameter="{Binding ElementName=BtnOwnerManagerAddress}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="/PinnaRent.WPF;component/Resources/Images/address_book3.png" Height="25" Width="25" Stretch="Uniform" />
+                                                <TextBlock Text=" አድራሻ " VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </telerik:RadButton>
+
+                                    </Grid>
+                                </telerik:RadExpander>
+
+                                
+                            </Grid>
+                        </telerik:RadTabItem>
+                 
+                        <telerik:RadTabItem Header=" የድርጅቱ ተወካይ " Visibility="Visible"
+                                            IsEnabled="{Binding RepresenteeEnability}" 
+                                            VerticalContentAlignment="Top">
+                            <ContentControl Content="{Binding RenteeRepresenteeViewModel, Mode=TwoWay}" />
+                        </telerik:RadTabItem>
+                        
+                        <telerik:RadTabItem Header=" ተጨማሪ ">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <telerik:RadExpander Header="ሌሎች መረጃዎች" IsExpanded="True">
+                                    <Grid Margin="5,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="30" />
+                                            <RowDefinition Height="30" />
+                                            <RowDefinition Height="30" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="ተጨማሪ ባለቤት ሙሉ ስም:"
+                                                   VerticalAlignment="Center" />
+                                        <TextBox x:Name="TxtAdditionalOwner" Grid.Row="0" Grid.Column="1"
+                                                 ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtAdditionalOwner}"
+                                                 Text="{Binding SelectedCompany.OtherOwnerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                                                 Validation.Error="Validation_Error" Margin="0,3" />
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="ተጨማሪ ባለቤት ዜግነት:"
+                                                   VerticalAlignment="Center" />
+                                        <TextBox x:Name="TxtAdditionalOwnerCountry" Grid.Row="1" Grid.Column="1"
+                                                 ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtAdditionalOwnerCountry}"
+                                                 Text="{Binding SelectedCompany.OtherOwnerCountry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                                                 Validation.Error="Validation_Error" Margin="0,3" />
+                                        <TextBlock Text="የድርጅቱ አድራሻ(በቀድሞ አጠራር) " Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"/>
+                                        <TextBox x:Name="TxtPreviousAddress" Grid.Row="2" Grid.Column="1"
+                                                 ToolTip="{Binding (Validation.Errors)[0].ErrorContent, ElementName=TxtPreviousAddress}"
+                                                 Text="{Binding SelectedCompany.BusinessAddressPrevious, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                                                 Validation.Error="Validation_Error" Margin="0,3" />
+                                    </Grid>
+                                    </telerik:RadExpander>
+                               <telerik:RadExpander Grid.Row="1" Header="የደብዳቤ ራስጌ/ግርጌ" IsExpanded="True">
+                                <Grid Margin="5,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30" />
+                                        <RowDefinition Height="30" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <telerik:RadButton Grid.Row="0" Grid.Column="0" Content="ራስጌ(Header)"
+                                                           Name="BtnLetterHeader"
+                                                           Command="{Binding ShowLetterHeaderImageCommand}"
+                                                           VerticalAlignment="Center" />
+                                    <Image Grid.Row="0" Grid.Column="1" Name="ImgbtnLetterHeader"
+                                               Source="{Binding LetterHeadImage}" Stretch="Fill" />
+
+                                    <telerik:RadButton Grid.Row="1" Grid.Column="0" Content="ግርጌ(Footer)"
+                                                           Name="BtnLetterFooter"
+                                                           Command="{Binding ShowLetterFooterImageCommand}"
+                                                           VerticalAlignment="Center" />
+                                    <Image Grid.Row="1" Grid.Column="1" Name="ImgbtnLetterFooter"
+                                               Source="{Binding LetterFootImage}" Stretch="Fill" />
+                                </Grid>
+                            </telerik:RadExpander>
+                            </Grid>
+                        </telerik:RadTabItem>
+                    </telerik:RadTabControl>
+
+
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" Background="Transparent"
+                                HorizontalAlignment="Right" Margin="3,0">
+
+                        <telerik:RadButton Tag="Save" x:Name="BtnSave"
+                                           Command="{Binding SaveCompanyViewCommand}"
+                                           CommandParameter="{Binding ElementName=WdwCompany}" >
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/PinnaRent.WPF;component/Resources/Images/disk_blue.png" Height="30" Width="30"
+                                   Stretch="Uniform" />
+                                <TextBlock VerticalAlignment="Center"> አስቀምጥ</TextBlock>
+                            </StackPanel>
+                        </telerik:RadButton>
+
+                    </StackPanel>
+
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

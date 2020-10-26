@@ -1,0 +1,252 @@
+﻿<Window      x:Class="PinnaRent.WPF.Views.Expenses"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             mc:Ignorable="d" AllowDrop="True" x:Name="WdwExpenseLoan"             
+             Title="ወጪዎች" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow"
+             Background="Transparent" AllowsTransparency="False" ResizeMode="CanResize"
+             DataContext="{Binding Expenses, Source={StaticResource Locator}}" Closing="ExpenseLoans_OnClosing"
+             Height="650" Width="860" WindowState="Maximized"
+             Icon="/PinnaRent.WPF;component/Resources/office-building.ico">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/MainSkin.xaml" />
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/ControlsDictionary.xaml" />
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/ListViewDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid ShowGridLines="False" x:Name="LayoutRoot">
+        <Border Style="{StaticResource mainBorder2}" CornerRadius="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <telerik:RadExpander Grid.Row="0"  Margin="5,0" 
+                          Header="ማጥሪያ" IsExpanded="True" Visibility="Collapsed">
+                    <Grid Margin="5,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition  Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition  Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition  Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="By Reason:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"/>
+                        <TextBox x:Name="TxtbyReason" Grid.Column="1" Grid.Row="1"
+                                     Margin="5,5" Height="25" TextAlignment="Left"  FontSize="14" TextWrapping="WrapWithOverflow"                                
+                                     Text="{Binding FilterByReason, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"/>
+
+                        <TextBlock Text="By To/From:" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center"/>
+                        <TextBox x:Name="TxtbyPerson" Grid.Column="3" Grid.Row="1"  
+                                     Margin="5,5" Height="25" TextAlignment="Left" FontSize="14" TextWrapping="Wrap"
+                                     Text="{Binding FilterByPerson, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"/>
+                    </Grid>
+
+                </telerik:RadExpander>
+                <Grid Grid.Row="1" Margin="5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <telerik:RadButton  Grid.Column="0" Width="100" Tag="Expense" Name="ButtonExpense"   
+                                        CommandParameter="{Binding ElementName=ButtonExpense}"
+                                    Command="{Binding AddNewPaymentCommand}" Margin="5,3">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../../Resources/Images/add.png" Height="30" Width="30"
+                                           Stretch="Uniform" />
+                            <TextBlock VerticalAlignment="Center" > አስገባ</TextBlock>
+                        </StackPanel>
+                    </telerik:RadButton>
+                    <telerik:RadButton  Grid.Column="1" Visibility="{Binding UserRoles.ExpenseEdit}" Tag="Edit" Name="ButtonEdit" 
+                             CommandParameter="{Binding ElementName=ButtonEdit}" 
+                                    Command="{Binding AddNewPaymentCommand}" Margin="5,3" Width="100">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="../../Resources/Images/document_edit.png" Height="30" Width="30"
+                                           Stretch="Uniform" />
+                                    <TextBlock VerticalAlignment="Center" > አስተካክል</TextBlock>
+                                </StackPanel>
+                    </telerik:RadButton>
+                    <telerik:RadButton  Grid.Column="2" Visibility="{Binding UserRoles.ExpenseDelete}"
+                                    Command="{Binding DeletePaymentCommand}" Margin="5,3" Width="100">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="../../Resources/Images/delete.png" Height="30" Width="30"
+                                           Stretch="Uniform" />
+                            <TextBlock VerticalAlignment="Center" > አጥፋ</TextBlock>
+                        </StackPanel>
+                    </telerik:RadButton>
+                    <Grid Grid.Column="3" Margin="0" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="35" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="ከ:" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" />
+                        <Grid Grid.Column="3" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Margin="0,5" IsEnabled="False" Text="{Binding StartDateText}" 
+                                     VerticalContentAlignment="Center" FontFamily="Bookman old style"
+                                     x:Name="TxtStartDateDate"  Visibility="Visible" />
+                            <Button Grid.Column="1" x:Name="BtnStartDate" Margin="0,3" Background="Transparent" BorderThickness="0"
+                                    Command="{Binding MemberStartDateViewCommand}" HorizontalAlignment="Right"
+                                    ToolTip="View/Change Start Date" Tag="StartDate">
+                                <Image Source="../../Resources/Images/calendar.png" Stretch="Uniform" Height="20" />
+                            </Button>
+                        </Grid>
+                        <DatePicker Grid.Column="3" Grid.Row="1" Visibility="Hidden"
+                                    x:Name="DtFromDate"
+                                    SelectedDate="{Binding FilterStartDate}"
+                                    Margin="5,0"
+                                    VerticalAlignment="Center" />
+
+                        <TextBlock Text="እስከ:" Grid.Column="4" Grid.Row="1" VerticalAlignment="Center" />
+                        <DatePicker x:Name="DtToDate" Grid.Column="5" Grid.Row="1" Visibility="Hidden"
+                                    SelectedDate="{Binding FilterEndDate}"
+                                    Margin="5,0"
+                                    VerticalAlignment="Center" />
+                        <Grid Grid.Column="5" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Margin="0,5" IsEnabled="False" Text="{Binding EndDateText}"
+                                     VerticalContentAlignment="Center"
+                                     x:Name="TxtEndDateDate"  Visibility="Visible" />
+                            <Button Grid.Column="1" x:Name="BtnEndDate" Margin="0,3" Background="Transparent" BorderThickness="0"
+                                    Command="{Binding MemberEndDateViewCommand}" HorizontalAlignment="Right"
+                                    ToolTip="View/Change End Date" Tag="EndDate">
+                                <Image Source="../../Resources/Images/calendar.png" Stretch="Uniform" Height="20" />
+                            </Button>
+                        </Grid>
+
+                    </Grid>
+                    <telerik:RadButton  Grid.Column="4"  Margin="5,3" Width="100"
+                                    IsEnabled="True" 
+                                    Content="አሳይ"
+                                    Command="{Binding RefreshWindowCommand}"/>
+                    <telerik:RadButton  Grid.Column="5"  Margin="5,3" Width="100"
+                                    IsEnabled="True" 
+                                    Content="ወደ ኤክሴል" 
+                                    Command="{Binding ExportToExcelCommand}" 
+                                    />
+
+                </Grid>
+                <Grid Grid.Row="2"  Margin="5,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                       <telerik:RadGridView x:Name="ListView"
+                                     ItemContainerStyle="{StaticResource GridViewItem}"
+                                     SelectedItem="{Binding SelectedPayment}"
+                                     ItemsSource="{Binding Payments}" Margin="5,0"
+                                     GroupRenderMode="Flat"
+                                     CanUserFreezeColumns="False"
+                                     RowIndicatorVisibility="Collapsed"
+                                     AutoGenerateColumns="False"
+                                     IsReadOnly="True"
+                                     Background="Transparent"
+                                     ShowGroupPanel="False"
+                                     telerik:StyleManager.Theme="Windows7">
+                            <telerik:RadGridView.Columns>
+                                <telerik:GridViewDataColumn Header="ተ.ቁ." Width="auto"
+                                                            DataMemberBinding="{Binding SerialNumber}"
+                                                            IsGroupable="False"
+                                                            IsFilterable="False" />
+                                <telerik:GridViewDataColumn Header="ቁጥር" DataMemberBinding="{Binding Number}"
+                                                    Width="auto" IsGroupable="False" IsFilterable="False" />
+                                <telerik:GridViewDataColumn Header="የተከፈለበት ቀን" DataMemberBinding="{Binding PaymentDateStringAmharic}"
+                                                    Width="auto" IsGroupable="False" IsFilterable="False" />
+                                <telerik:GridViewDataColumn Header="ምክንያት" DataMemberBinding="{Binding Reason}"
+                                                    Width="300" IsGroupable="False" IsFilterable="False" />
+                                <telerik:GridViewDataColumn Header="የተከፈለው ለ" DataMemberBinding="{Binding ReceiverName}"
+                                                    Width="120" IsGroupable="False" IsFilterable="False" />
+                                <telerik:GridViewDataColumn Header="ዋጋው" DataMemberBinding="{Binding AmountString}"
+                                                    Width="auto" IsGroupable="False" IsFilterable="False" />
+                                <telerik:GridViewDataColumn Header="ደረሰኝ ቁ." DataMemberBinding="{Binding ReceiptNumber}"
+                                                    Width="auto" IsGroupable="False" IsFilterable="False" />
+                                <telerik:GridViewDataColumn Header="ደረሰኝ ቀን" DataMemberBinding="{Binding ReceiptDateStringAmharic}"
+                                                    Width="auto" IsGroupable="False" IsFilterable="False" />
+                                <telerik:GridViewDataColumn Header="ቼክ ቁ." DataMemberBinding="{Binding CheckNumber}"
+                                                    Width="auto" IsGroupable="False" IsFilterable="False" />
+
+                            </telerik:RadGridView.Columns>
+                        </telerik:RadGridView>
+                    </Grid>
+                    
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+
+                       <StackPanel Grid.Row="3" Margin ="0" Orientation="Vertical">
+
+                            <DockPanel LastChildFill="True">
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Right" >
+                                    
+                        
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20,0" >
+                                    <TextBlock FontSize="12"  FontFamily="Bookman old style" 
+                                               Text="Total No: " VerticalAlignment="Center"/>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                               FontSize="12"  FontFamily="Bookman old style"
+                                               Text="{Binding TotalNumberOfPayments}" />
+                                    <TextBlock Margin="10,0,0,0" FontSize="12"  FontFamily="Bookman old style" 
+                                               Text="Total Value: " VerticalAlignment="Center"/>
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                               FontSize="12"  FontFamily="Bookman old style"
+                                               Text="{Binding TotalValueOfPayments}" />
+                                </StackPanel>
+                                
+                            </DockPanel>
+                            
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
+
+
+

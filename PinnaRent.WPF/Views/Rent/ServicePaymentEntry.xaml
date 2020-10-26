@@ -1,0 +1,63 @@
+﻿<Window x:Class="PinnaRent.WPF.Views.ServicePaymentEntry"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        mc:Ignorable="d"
+        Title="የአገልግሎት ክፍያ ማስገቢያ/ማስተካከያ" Height="350" Width="725" Name="WdwAddress"
+        WindowStartupLocation="CenterScreen" Margin="0,0,0,0" ResizeMode="NoResize"
+        DataContext="{Binding ServicePaymentEntry, Source={StaticResource Locator}}"
+        Background="Transparent" WindowStyle="ThreeDBorderWindow" Closing="ServicePaymentEntry_OnClosing"
+        Icon="/PinnaRent.WPF;component/Resources/office-building.ico" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/MainSkin.xaml" />
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/ControlsDictionary.xaml" />
+                <ResourceDictionary Source="/PinnaRent.WPF;component/Skins/ListViewDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </Window.Resources>
+
+    <Grid x:Name="LayoutRoot">
+        <Border Style="{StaticResource mainBorder}" CornerRadius="0" 
+                TextBlock.FontFamily="Bookman old style" TextBlock.Foreground="White">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="1">
+                    <Grid Margin="2,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="2"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <ContentControl Grid.Row="0" Grid.Column="0" Content="{Binding CurrentViewModel, Mode=TwoWay}"   />
+                        <!--<GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" />-->
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" 
+                                    Background="Transparent" HorizontalAlignment="Right">
+
+                            <telerik:RadButton Tag="Save" x:Name="BtnSave"
+                                    Command="{Binding SaveRentalPaymentViewCommand}" IsDefault="True"
+                                    CommandParameter="{Binding ElementName=WdwAddress}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/PinnaRent.WPF;component/Resources/Images/disk_blue.png" Height="30" Width="30" Stretch="Uniform" />
+                                    <TextBlock VerticalAlignment="Center"> አስቀምጥ</TextBlock>
+                                </StackPanel>
+                            </telerik:RadButton>
+                            
+
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
